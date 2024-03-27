@@ -1,0 +1,338 @@
+/*
+ * <Tema>  Creación y operaciones con listas
+ * <Fecha> 14 de Marzo de 2024
+ *
+ * <Integrantes>
+ * Vanessa Reteguín                |   ID: 373355
+ * Pablo David Pérez López         |   ID: 300452
+ * Alexis Alberto Zúñiga Alonso    |   ID: 307172
+ *
+ * <Carrera>   Ingeniería en Computación Inteligente (ICI)
+ * <Semestre>  Segundo Semestre
+ * <Grupo>     2 - A
+ * <Materia>   Estructuras Computacionales
+ * <Profesora> María Loreto Edit López Veloz
+ *
+ * Instrucciones:
+ * Operaciones de la lista
+ * <1> Insertar
+ * <2> Recorrer
+ * <3> Búsqueda
+ * <4> Eliminar
+ * <5> Revisar si la lista está vacía
+ * <6> Salir
+ */
+
+#include <cstdlib>  // Reservar memoria
+#include <iostream>
+
+using namespace std;
+
+struct nodo {
+  int dato;
+  nodo *siguiente;
+};
+
+void inter_val(nodo *, int, int);
+void clear_screen();
+void eliminar_Valor(nodo *&lista, int posicion) {
+  // Validar la posición
+  if (posicion <= 0) {
+    cout << "\n[!] La posición debe ser un número positivo." << endl;
+    return;
+  }
+
+  // Recorrer la lista hasta llegar a la posición indicada
+  nodo *actual = lista;
+  nodo *anterior = NULL;
+  for (int i = 1; i < posicion; i++) {
+    if (actual == NULL) {
+      // Posición no válida
+      cout << "\n[!] La posición indicada no existe en la lista." << endl;
+      return;
+    }
+    anterior = actual;
+    actual = actual->siguiente;
+  }
+
+  // Eliminar el nodo
+  if (actual != NULL) {
+    if (anterior == NULL) {
+      // Eliminar el primer nodo
+      lista = lista->siguiente;
+    } else {
+      // Eliminar un nodo intermedio
+      anterior->siguiente = actual->siguiente;
+    }
+    delete actual;
+    cout << "\nNodo eliminado exitosamente." << endl;
+  }
+}
+
+void newNode(nodo *&lista, int n) {
+  nodo *nuevo_nodo;
+  nuevo_nodo = new (nodo);
+
+  if (nuevo_nodo != NULL) {
+    nuevo_nodo->dato = n;
+    nuevo_nodo->siguiente = lista;
+    lista = nuevo_nodo;
+
+    cout << "\nNodo insertado exitosamente\n" << endl;
+
+  } else {
+    cout << endl << "[!] No fue posible reservar memoria" << endl;
+  }
+}
+
+void buscarElemento(nodo *lista, int valor) {
+  if (lista == NULL) {
+    cout << "\n[!] La lista está vacía." << endl;
+    return;
+  }
+
+  nodo *actual = lista;
+  int posicion = 1;
+
+  while (actual != NULL && actual->dato != valor) {
+    actual = actual->siguiente;
+    posicion++;
+  }
+
+  if (actual == NULL) {
+    cout << "\n[!] El elemento no se encuentra en la lista." << endl;
+  } else {
+    cout << "\nElemento encontrado en la posición " << posicion << endl;
+  }
+}
+
+int numeroElementos(nodo *lista) {
+  int contador = 0;
+  nodo *actual = lista;
+
+  while (actual != NULL) {
+    contador++;
+    actual = actual->siguiente;
+  }
+
+  return contador;
+}
+
+void printList(nodo *lista) {
+  if (lista == NULL) {
+    cout << "\n[!] La lista está vacía." << endl;
+    return;
+  }
+
+  nodo *current;
+  current = lista;
+
+  int i = 0;
+  while (current != NULL) {
+    cout << "#" << (i + 1) << " : " << current->dato << endl;
+    current = current->siguiente;
+    i++;
+  }
+}
+
+void diplayMenu() {
+  cout << endl
+       << "\n.-------------------------------------."
+          "\n||            -{ MENU }-           ||"
+          "\n.-------------------------------------."
+          "\n| [1] Crear lista                     |"
+          "\n| [2] Insertar nuevos elementos       |"
+          "\n| [3] Modificar posiciones (recorrer) |"
+          "\n| [4] Buscar elemento                 |"
+          "\n| [5] Eliminar elemento               |"
+          "\n| [6] Número de elementos existente   |"
+          "\n|                                     |"
+          "\n|                  [7] Imprimir lista |"
+          "\n|                           [8] Salir |"
+          "\n.-------------------------------------.\n";
+}
+
+void endTitle() {
+  cout << "\n  ^~^  , * ------------- *"
+          "\n ('Y') ) |  Hasta luego! | "
+          "\n /   \\/  * ------------- *"
+          "\n(\\|||/)        FIN      \n";
+}
+
+int main() {
+  int userChoice;
+  bool run = true, listExists = false, crear_Lista = false;
+
+  while (run == true) {
+    diplayMenu();
+
+    if (listExists == false) {
+      cout << endl
+           << "[!] Lista dinámica no existente" << endl
+           << "    Cree una lista para poder ejecutar acciones\n"
+           << endl;
+
+      while (!((cin >> userChoice) && (userChoice >= 1 && userChoice <= 1))) {
+        cin.clear();
+        cin.ignore();
+      }
+    } else {
+      while (!((cin >> userChoice) && (userChoice >= 1 && userChoice <= 8))) {
+        cin.clear();
+        cin.ignore();
+      }
+    }
+
+    switch (userChoice) {
+      case 1:
+        nodo *lista;
+        lista = NULL;
+
+        cout << endl
+             << "[*] Lista creada exitosamente: Recuerde NO volver a elegir "
+                "esta "
+                "opción a menos que quiera RESETEAR la lista"
+             << endl;
+        listExists = true;
+
+        cout << endl << "{Lista}\n" << endl;
+        printList(lista);
+
+        getchar();
+        break;
+
+      case 2:
+        int num, i, nNodes;
+        cout << endl << "Ingrese el número de nodos a agregar: " << endl;
+        while (!(cin >> nNodes)) {
+          cin.clear();
+          cin.ignore();
+        }
+
+        for (i = 0; i < nNodes; i++) {
+          cout << endl
+               << "Ingrese el valor del nodo #" << abs(i - nNodes) << ": ";
+          while (!(cin >> num)) {
+            cin.clear();
+            cin.ignore();
+          }
+          newNode(lista, num);
+        }
+
+        cout << endl << "{Lista}\n" << endl;
+        printList(lista);
+
+        getchar();
+        break;
+      case 3:
+        int opcion, opcion2;
+        if (numeroElementos(lista) >= 2) {
+          cout << "Introduzca la primera posición a intercambiar: ";
+          // cin >> opcion;
+          while (!((cin >> opcion) &&
+                   (opcion >= 1 && opcion <= numeroElementos(lista)))) {
+            cin.clear();
+            cin.ignore();
+          }
+
+          cout << "Introduzca la segunda posición a intercambiar: ";
+          // cin >> opcion2;
+
+          while (!((cin >> opcion2) &&
+                   (opcion2 >= 1 && opcion2 <= numeroElementos(lista)))) {
+            cin.clear();
+            cin.ignore();
+          }
+
+          inter_val(lista, opcion, opcion2);
+
+          cout << endl << "{Lista}\n" << endl;
+          printList(lista);
+        } else {
+          cout << endl
+               << "[!] La lista debe contener al menos dos elementos para "
+                  "poder intercambiar posiciones"
+               << endl;
+        }
+
+        getchar();
+        break;
+      case 4: {
+        cout << "Ingresa el valor a buscar: ";
+        int valor;
+        cin >> valor;
+        buscarElemento(lista, valor);
+        getchar();
+        break;
+      }
+      case 5:
+        int posicion;
+
+        if (numeroElementos(lista) >= 1) {
+          cout << endl << "{Lista}\n" << endl;
+          printList(lista);
+          cout << endl
+               << "Introduzca la posición del nodo que desea eliminar: ";
+          while (!((cin >> posicion) &&
+                   (posicion >= 1 && posicion <= numeroElementos(lista)))) {
+            cin.clear();
+            cin.ignore();
+          }
+          // cin >> posicion;
+
+          eliminar_Valor(lista, posicion);
+
+          printList(lista);
+        } else {
+          cout << endl
+               << "[!] La lista debe contener al menos un elemento para "
+                  "poder eliminar elementos"
+               << endl;
+        }
+
+        getchar();
+        break;
+      case 6: {
+        if (listExists) {
+          int numero_elementos = numeroElementos(lista);
+
+          cout << "La lista tiene " << numero_elementos << " elementos."
+               << endl;
+        } else {
+          cout << "[!] La lista no existe." << endl;
+        }
+
+        getchar();
+        cin.clear();
+        break;
+      }
+      case 7:
+        cout << endl << "{Lista}\n" << endl;
+        printList(lista);
+        getchar();
+        break;
+      case 8:
+        endTitle();
+        run = false;
+        break;
+    }
+  }
+
+  return 0;
+}
+
+void inter_val(nodo *lista, int opcion, int opcion2) {
+  nodo *actual1 = lista;
+  for (int i = 0; i < opcion - 1; i++) {
+    actual1 = actual1->siguiente;
+  }
+  nodo *actual2 = lista;
+  for (int i = 0; i < opcion2 - 1; i++) {
+    actual2 = actual2->siguiente;
+  }
+
+  // Intercambiar los datos de los nodos
+  int temp = actual1->dato;
+  actual1->dato = actual2->dato;
+  actual2->dato = temp;
+}
