@@ -179,7 +179,7 @@ void printList(nodo *listHead, string direcction) {
 
       while (last != NULL) {
         cout << "#" << (i) << " : " << last->dato << endl;
-        last = last->siguiente;
+        last = last->anterior;
         i--;
       }
     }
@@ -357,7 +357,7 @@ int main() {
       break;
     }
     case 7:
-      cout << "Ingrese el sentido para iterar sobre los nodos (-> / <-): ";
+      cout << "Ingrese el sentido para imprimir los nodos (-> / <-): ";
       while ((cin >> direction) &&
              !((direction == "->") || (direction == "<-"))) {
         cin.clear();
